@@ -1,0 +1,12 @@
+
+======
+TEST01
+======
+
+System:      He (2 electrons) separated by 200 Ang from He (2 electrons)
+Level:       HF-exch with 6-311G for helium
+Compare to:  Corresponding RHF calculation for isolated He
+
+Results:     Test passes when G ansatz is used. See README file in each ansatz_G/ directory for each basis set
+             Test fails when 1+G ansatz is used.
+

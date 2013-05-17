@@ -1,0 +1,22 @@
+#!/bin/bash
+
+cd main/
+../comp *.f
+mv *.o ../../object
+
+cd ../utils/
+../comp *.f
+mv *.o ../../object
+
+cd ../hfexch/
+../comp *.f
+mv *.o ../../object
+
+cd ../CS_Integrals/
+../comp *.f
+mv *.o ../../object
+
+cd ../AC_Integrals/
+../comp *.f
+mv *.o ../../object
+
