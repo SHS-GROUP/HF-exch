@@ -1,9 +1,9 @@
 !======================================================================
       subroutine scf(nelec,NAE,NBE,NPRA,NPRB,NEBFLT,
      x               npebf,nebf,nebf2,ngee,
-     x               read_CE,read_CP,
+     x               read_CE,
      x               LSOSCF,LOCBSE,LDBG,
-     x               nat,pmass,cat,zan,
+     x               nat,cat,zan,
      x               KPESTR,KPEEND,AMPEB2C,AGEBFCC,
      x               ELCEX,ELCAM,ELCBFC)
 
@@ -70,9 +70,7 @@
       PARAMETER (ZERO=0.0D+00, ONE=1.0D+00) 
 
       double precision xxse(nebf,nebf)  ! Elec overlap matrix
-      double precision GAM_pcore(npbf2)
       double precision GAM_ecore(nebf2)
-      double precision GAM_ep(ng1)
       double precision GAM_ee(ngee)
 
       integer maxit
@@ -297,7 +295,6 @@ C )
 !     SET CONVERGENCE CRITERIA AND MAXIMUM ITERATIONS 
 !
       TOLE = 1.0D-06
-      TOLP = 1.0D-04
       maxit=100
       if(LOCBSE) maxit=400
 !

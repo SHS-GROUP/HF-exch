@@ -1,5 +1,5 @@
 !=======================================================================
-      program xcneo_hybrid
+      program hf_exch
 
 !=======================================================================
       implicit none
@@ -12,13 +12,13 @@
 !     call mpi_set(nproc,myid,ierr)
 
 !     call xcneo_hybrid_driver(nproc,myid)
-      call xcneo_driver
+      call hf_exch_driver
 
 !     call mpi_final(ierr)
 
       end
 !=======================================================================
-      subroutine xcneo_driver
+      subroutine hf_exch_driver
 
 !=======================================================================
       implicit none
@@ -41,7 +41,6 @@
       integer NAE               ! Number of regular electrons
       integer NBE               ! Number of special electrons
       integer NAalpE,NAbetE
-      double precision pmass    ! Mass of nonelectron quantum particle 
 !-------Basis Set Info-------)
       integer i,j,idum,istat
       integer NUCST
@@ -125,7 +124,6 @@
       write(*,*)'nat   =',nat
       write(*,*)'npebf =',npebf
       write(*,*)'nebf  =',nebf
-      write(*,*)'npbf  =',npbf
       write(*,*)'ngee  =',ngee
       write(*,*)'nelec   =',nelec
       write(*,*)'NAE     =',NAE
@@ -206,7 +204,7 @@
      x         npebf,nebf,nebf2,ngee,
      x         read_CE,
      x         LSOSCF,LOCBSE,LDBG,
-     x         nat,pmass,cat,zan,
+     x         nat,cat,zan,
      x         KPESTR,KPEEND,AMPEB2C,AGEBFCC,
      x         ELCEX,ELCAM,ELCBFC)
 

@@ -559,30 +559,3 @@ c
 c     return
 c     end
 C
-C======================================================================
-      SUBROUTINE MATMULT(ROWSA,COLSA,ROWSB,COLSB,A,B,C)
-
-C======================================================================
-      IMPLICIT DOUBLE PRECISION(A-H,O-Z)
-      INTEGER ROWSA,COLSB,COLSA,ROWSB
-      LOGICAL OKAY
-C     PARAMETER(X=1000,Y=1000)
-      DIMENSION A(ROWSA,COLSA), B(ROWSB,COLSB), C(ROWSB,COLSB)
-C     WANT C=A*B
-C     FIRST MAKE SURE ROWSA EQ COLSB, ELSE PRODUCT IS NOT DEFINED
-      OKAY=(ROWSA.EQ.COLSB)
-      IF(.NOT. OKAY) THEN
-          WRITE(*,*)'ERROR IN MATMULT, QUITTING'
-          STOP
-      END IF
-      DO 50 L=1,COLSA
-         DO 40 M=1,COLSB
-            C(L,M)=0D0
-            DO 30 N=1,ROWSA
-               C(L,M)=C(L,M)+A(L,N)*B(N,M)
- 30   CONTINUE
- 40   CONTINUE
- 50   CONTINUE
-      RETURN
-      END
-

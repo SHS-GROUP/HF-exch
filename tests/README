@@ -7,6 +7,35 @@ System:      He (2 electrons) separated by 200 Ang from He (2 electrons)
 Level:       HF-exch with 6-311G for helium
 Compare to:  Corresponding RHF calculation for isolated He
 
-Results:     Test passes when G ansatz is used. See README file in each ansatz_G/ directory for each basis set
-             Test fails when 1+G ansatz is used.
+GAMESS:
+            ONE ELECTRON ENERGY =      -3.8860484102
+            TWO ELECTRON ENERGY =       1.0261529856
+                   TOTAL ENERGY =      -2.8598954246
+
+HF-exch:
+      -----------------------------------------------
+               HF(exch) ENERGETIC COMPONENTS         
+      -----------------------------------------------
+                E_NUC=         0.0105835450
+            ---------------------------------
+             E_A_CORE=        -3.8966319570
+               E_A_EE=         1.0261529874
+                  E_A=        -2.8704789695
+            ---------------------------------
+             E_B_CORE=        -3.8966319570
+               E_B_EE=         1.0261529874
+                  E_B=        -2.8704789695
+            ---------------------------------
+                 E_AB=         0.0105835450
+            ---------------------------------
+              E_TOTAL=        -5.7303743941
+      -----------------------------------------------
+
+Results:
+ - one-electron energy of each subsystem is the same as GAMESS with additional E(e-,He)=-Enuc
+ - two-electron energy of each subsystem is the same as GAMESS
+ - interaction energy is exactly Enuc
+ - E(He + He) = 2*E(He) + Enuc + 2*E(e-,He)
+              = 2*E(He) + Enuc + 2*(-Enuc)
+              = 2*E(He) - Enuc
 
