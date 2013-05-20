@@ -28,14 +28,12 @@ HF-exch:
             ---------------------------------
                  E_AB=         0.0105835450
             ---------------------------------
-              E_TOTAL=        -5.7303743941
+              E_TOTAL=        -5.7197908491
       -----------------------------------------------
 
 Results:
  - one-electron energy of each subsystem is the same as GAMESS with additional E(e-,He)=-Enuc
  - two-electron energy of each subsystem is the same as GAMESS
  - interaction energy is exactly Enuc
- - E(He + He) = 2*E(He) + Enuc + 2*E(e-,He)
-              = 2*E(He) + Enuc + 2*(-Enuc)
-              = 2*E(He) - Enuc
+ - total energy is thus two times the isolated energy
 

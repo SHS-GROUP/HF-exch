@@ -2,10 +2,10 @@
       subroutine scf(nelec,NAE,NBE,NPRA,NPRB,NEBFLT,
      x               npebf,nebf,nebf2,ngee,
      x               read_CE,
-     x               LSOSCF,LOCBSE,LDBG,
+     x               LHF,LSOSCF,LOCBSE,LDBG,
      x               nat,cat,zan,
      x               KPESTR,KPEEND,AMPEB2C,AGEBFCC,
-     x               ELCEX,ELCAM,ELCBFC)
+     x               ELCEX,ELCAM,ELCBFC,GAM_ee)
 
 !
 ! PERFORM A NUCLEAR-ELECTRONIC RESTRICTED XC HARTREE-FOCK CALCULATION
@@ -29,11 +29,8 @@
 !     VECBE0 ::  OLD SPECIAL ELECTRON MOS
 !     BEE    ::  SPECIAL ELECTRON ORBITAL EIGENVALUES
 !
-!     *FOR PROTONS:
-!     DP    ::  NEW PROTON DENSITY MATRIX
-!     DP0   ::  OLD PROTON DENSITY MATRIX
-!     VECP  ::  PROTON MOS
-!     EP    ::  PROTON ORBITAL EIGENVALUES
+!     * FOR HF CALCULATION:
+!     USE AE VARIABLES
 !
 !======================================================================
       implicit none
@@ -41,6 +38,7 @@
       logical LOCBSE   ! Use OCBSE scheme as is (restricted variational freedom for reg/sp elecs)
       logical LOCBSE2  ! Use modified OCBSE scheme (complete variational freedom for reg elecs)
       logical read_CE
+      logical LHF
       logical LDBG
       integer nelec
       integer NAE,NBE
@@ -211,9 +209,24 @@ C      LOCBSE2=LOCBSE
       LOCBSE2=.false.
       if(LOCBSE2) then
        LOCBSE=.false.
-       write(*,*) "Using LOCBSE2"
+      end if
+      if (LHF) then
+       write(*,*) "Performing HF calculation"
+       LOCBSE=.false.
+       LOCBSE2=.false.
+       nae=nelec
       end if
       if(LOCBSE) write(*,*) "Using LOCBSE"
+      if(LOCBSE2) write(*,*) "Using LOCBSE2"
+
+      DAE=0.0d+00
+      DBE=0.0d+00
+      DAE0=0.0d+00
+      DBE0=0.0d+00
+      vecAE=0.0d+00
+      vecBE=0.0d+00
+      vecAE0=0.0d+00
+      vecBE0=0.0d+00
 
 !----------CALCULATE-CLASSICAL-NUCLEAR-REPULSION-ENERGY----------------(
 !      call class_nuc_rep(nat,zan,cat,E_nuc)
@@ -230,17 +243,16 @@ C      LOCBSE2=LOCBSE
       write(*,*)'READ IN ELEC OVLAP'
       call read_GAM_ecore(nebf,nebf2,GAM_ecore)
       write(*,*)'READ IN GAM_ECORE'
-      call read_GAM_ee(nebf,ngee,GAM_ee)
-      write(*,*)'READ IN GAM_EE'
+C      call read_GAM_ee(nebf,ngee,GAM_ee)
+C      write(*,*)'READ IN GAM_EE'
       write(*,*)
 !--------------READ-INTEGRALS-NEEDED-FOR-NEO-HF------------------------)
 
 !-------------INITIAL-GUESSES------------------------------------------(
       if(read_CE) then
 !        READ IN GUESS FOR E:
-!        call read_elec_density(nebf,nelec,DE)
          call read_CAE(nebf,NAE,DAE,VECAE0)
-         call read_CBE(nebf,NBE,DBE,VECBE0)
+         if(.not.LHF) call read_CBE(nebf,NBE,DBE,VECBE0)
       else
 !       STANDARD GUESS:  HCORE FOR NUC AND ELEC DENSITIES:
         write(*,*)'ABOUT TO CALL guess_A_elec'
@@ -251,9 +263,11 @@ C      LOCBSE2=LOCBSE
           write(*,*)'BACK FROM guess_elec for OCBSE'
         else
          call guess_A_elec(NAE,nebf,xxse,GAM_ecore,DAE,VECAE0)
-         call guess_A_elec(NBE,nebf,xxse,GAM_ecore,DBE,VECBE0)
-          write(*,*)'BACK FROM guess_elec'
-          write(*,*)
+         if(.not.LHF) then
+          call guess_A_elec(NBE,nebf,xxse,GAM_ecore,DBE,VECBE0)
+         end if
+         write(*,*)'BACK FROM guess_elec'
+         write(*,*)
         end if
       end if
 
@@ -298,15 +312,19 @@ C )
       maxit=100
       if(LOCBSE) maxit=400
 !
-!     ZERO OUT 'OLD' DENSITY MATRICES
-!
-      DAE0=0.0d+00
-      DBE0=0.0d+00
-!
 !     BEGIN XCSCF ITERATIONS
       WRITE(*,9500)
 !     WRITE(*,9000)
 !
+      E_total=0.0d+00
+      E_A_ecore=0.0d+00
+      E_A_ee=0.0d+00
+      E_A=0.0d+00
+      E_B_ecore=0.0d+00
+      E_B_ee=0.0d+00
+      E_B=0.0d+00
+      E_AB=0.0d+00
+
       E_total_old=0.0d+00
       ORBGRDA=0.0d+00
 C      ORBGRDB=0.0d+00
@@ -326,32 +344,36 @@ C Call HF Fock build for NAE electrons
      x                DAE,GAM_ecore,GAM_ee,
      x                FAE,E_A,E_A_ecore,E_A_ee)
 
+         if (.not.LHF) then
 C Call HF Fock build for NBE electrons
-         call fock_hf(LDBG,nebf,nebf2,NBE,ngee,
-     x                DBE,GAM_ecore,GAM_ee,
-     x                FBE,E_B,E_B_ecore,E_B_ee)
+          call fock_hf(LDBG,nebf,nebf2,NBE,ngee,
+     x                 DBE,GAM_ecore,GAM_ee,
+     x                 FBE,E_B,E_B_ecore,E_B_ee)
 
 C Call interaction Fock build for all particles
-         call fock_int(LDBG,nelec,NAE,NBE,
-     x                 nebf,nebf2,ngee,
-     x                 DAE,DBE,GAM_ee,
-     x                 FAEint,FBEint, 
-     x                 E_AB)
+          call fock_int(LDBG,nelec,NAE,NBE,
+     x                  nebf,nebf2,ngee,
+     x                  DAE,DBE,GAM_ee,
+     x                  FAEint,FBEint, 
+     x                  E_AB)
 
           call add2fock(nebf,FAEint,FAE)
           call add2fock(nebf,FBEint,FBE)
+         end if
 
           IF (LDBG) then
            write(*,*)
            write(*,*) "FAE:"
            call prt_lower_triangle(nebf,nebflt,FAE)
            write(*,*)
-           write(*,*) "FBE:"
-           call prt_lower_triangle(nebf,nebflt,FBE)
+           if (.not.LHF) then
+            write(*,*) "FBE:"
+            call prt_lower_triangle(nebf,nebflt,FBE)
+           end if
            write(*,*)
           END IF  
 
-          E_total=E_A+E_B+E_AB
+          E_total=E_A+E_B+E_AB+E_nuc
 
        end if
 
@@ -422,7 +444,7 @@ C Call interaction Fock build for all particles
              write(*,*)
             END IF  
 
-            E_total=E_A+E_B+E_AB
+            E_total=E_A+E_B+E_AB+E_nuc
 
          else if (LOCBSE2) then
 ! Do OCBSE2 procedure (restricted solutions for special electrons)
@@ -513,7 +535,7 @@ C Call interaction Fock build for all particles
              write(*,*)
             END IF  
 
-            E_total=E_A+E_B+E_AB
+            E_total=E_A+E_B+E_AB+E_nuc
 
          else
 
@@ -523,6 +545,9 @@ C Call interaction Fock build for all particles
           EIGAVL = ITER.GT.1
          end if
          IF(LSOSCF .AND.  EIGAVL) THEN
+          write(*,*) "nae:",nae
+          write(*,*) "na:",na
+          write(*,*) "npra:",npra
 !!!!!!      --> SETUP LOWER TRIANGLE FOCKE FOR SOSCF
            call pack_LT(nebf,nebfLT,FAE,FLT)
           call SOGRAD(GRADA,FLT,vecAE,WRK,NPRA,NA,L0,L1,NEBFLT,ORBGRDA)
@@ -589,8 +614,10 @@ C         END IF
 
   800 CONTINUE
 !        call ROOTHAN(DBE,vecBE,BEE,xxse,FBE,nebf,nelec,1,NUCST)
+        if (.not.LHF) then
          call UROOTHAN(vecBE,BEE,xxse,FBE,nebf)
          call construct_DE(NBE,nebf,vecBE,DBE)
+        end if
 
   850 CONTINUE
 !        --> FIND LARGEST CHANGE IN Beta E DENSITY

@@ -1,6 +1,6 @@
 C======================================================================
       subroutine calc_GAM_ee(nebf,npebf,ngee,
-     x                       AMPEB2C,AGEBFCC,ELCEX,ELCAM,ELCBFC)
+     x                       AMPEB2C,AGEBFCC,ELCEX,ELCAM,ELCBFC,GAM_ee)
 
 C======================================================================
       implicit none
@@ -41,7 +41,6 @@ C Local variables
       double precision A2,Amat2(3) 
       double precision B1,Bmat1(3) 
       double precision B2,Bmat2(3) 
-
 
       write(*,*)
       write(*,*)'**************************************'
@@ -122,11 +121,18 @@ C Get Basis set info:
 C Calculate the primitive integral
 C  calc <ie1 ie2|V^ee|je1 je2> 
 c                 call xcalc_GAM_ee(ie1,je1,ie2,je2,ans)
-                  call xcalc_GAM_ee(I1,J1,K1,A1,Amat1,
+C ARS( use my vee
+C                  call xcalc_GAM_ee(I1,J1,K1,A1,Amat1,
+C     x                              I2,J2,K2,A2,Amat2,
+C     x                              L1,M1,N1,B1,Bmat1,
+C     x                              L2,M2,N2,B2,Bmat2,
+C     x                              ans)
+                  call TwoElecRepul(I1,J1,K1,A1,Amat1,
      x                              I2,J2,K2,A2,Amat2,
      x                              L1,M1,N1,B1,Bmat1,
      x                              L2,M2,N2,B2,Bmat2,
      x                              ans)
+C )
 
                   GAM_ee(ia)=GAM_ee(ia)+ans*
      x                      Cof_ie1*Cof_je1*
@@ -139,30 +145,30 @@ c                 write(*,*)'ia=',ia,' GAM_ee=',GAM_ee(ia)
          end do
       end do
 
-C Write 2 electron integrals to file
-      open(810,file='GAM_ee.ufm',form='unformatted',
-     x status='unknown',access='direct',RECL=8)
-
-      do iec1=1,nebf
-         do jec1=1,nebf
-            do iec2=1,nebf
-               do jec2=1,nebf
-
-C  Map the 4-index contracted integral to 1-D:
-                  call pack_4D(nebf,nebf,nebf,
-     x                         jec2,iec2,jec1,iec1,ia)
-
-                  write(810,REC=ia) GAM_ee(ia)
-
-               end do
-            end do
-         end do
-      end do
-
-      close(810)
-c     do ia=1,ngee
-c        write(*,*)'ia=',ia,' GAM_ee=',GAM_ee(ia)
-c     end do
+CC Write 2 electron integrals to file
+C      open(810,file='GAM_ee.ufm',form='unformatted',
+C     x status='unknown',access='direct',RECL=8)
+C
+C      do iec1=1,nebf
+C         do jec1=1,nebf
+C            do iec2=1,nebf
+C               do jec2=1,nebf
+C
+CC  Map the 4-index contracted integral to 1-D:
+C                  call pack_4D(nebf,nebf,nebf,
+C     x                         jec2,iec2,jec1,iec1,ia)
+C
+C                  write(810,REC=ia) GAM_ee(ia)
+C
+C               end do
+C            end do
+C         end do
+C      end do
+C
+C      close(810)
+Cc     do ia=1,ngee
+Cc        write(*,*)'ia=',ia,' GAM_ee=',GAM_ee(ia)
+Cc     end do
 
       return
       end

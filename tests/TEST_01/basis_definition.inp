@@ -17,6 +17,7 @@
 2       = NAE           number of electrons in A subsystem
 2       = NBE           number of electrons in B subsystem
 .false. = read_CE       read in electronic vectors from guessC[A,B]E.inp
+.false. = LHF           force regular Hartree-Fock calculation
 .true.  = LDBG          debugging flag
 .true.  = LSOSCF        second-order SCF converger
 .true.  = LOCBSE        orthogonality-constrained basis set expansion method

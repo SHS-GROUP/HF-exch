@@ -45,6 +45,7 @@
       integer i,j,idum,istat
       integer NUCST
       logical read_CE
+      logical LHF
       logical LDBG
       logical LSOSCF
       logical LOCBSE
@@ -63,6 +64,7 @@
 
       double precision wtime,wtime1,wtime2
 
+      double precision, allocatable :: GAM_ee(:)
 
       wtime = omp_get_wtime()
 
@@ -106,6 +108,7 @@
       read(9,*)NAE
       read(9,*)NBE
       read(9,*) read_CE
+      read(9,*) LHF
       read(9,*) LDBG
       read(9,*) LSOSCF
       read(9,*) LOCBSE
@@ -128,6 +131,7 @@
       write(*,*)'nelec   =',nelec
       write(*,*)'NAE     =',NAE
       write(*,*)'NBE     =',NBE
+      write(*,*)'LHF     =',LHF
       write(*,*)'read_CE =',read_CE
       write(*,*)'LDBG    =',LDBG
       write(*,*)'LSOSCF  =',LSOSCF
@@ -176,8 +180,10 @@
      x                    AMPEB2C,AGEBFCC,
      x                    ELCEX,ELCAM,ELCBFC)
 
+      if(allocated(GAM_ee)) deallocate(GAM_ee)
+      allocate(GAM_ee(ngee))
       call calc_GAM_ee(nebf,npebf,ngee,
-     x                 AMPEB2C,AGEBFCC,ELCEX,ELCAM,ELCBFC)
+     x                 AMPEB2C,AGEBFCC,ELCEX,ELCAM,ELCBFC,GAM_ee)
 
       nebf2=nebf*nebf
       if(nelec.gt.1) then
@@ -196,6 +202,7 @@
          NPRB=nbe*(nebf-nbe)
       end if
       NEBFLT=nebf*(nebf+1)/2
+      if(LHF) NPRA=NPR
 
       wtime1 = omp_get_wtime() - wtime
       wtime  = omp_get_wtime()
@@ -203,14 +210,16 @@
       call scf(nelec,nae,nbe,npra,nprb,nebflt,
      x         npebf,nebf,nebf2,ngee,
      x         read_CE,
-     x         LSOSCF,LOCBSE,LDBG,
+     x         LHF,LSOSCF,LOCBSE,LDBG,
      x         nat,cat,zan,
      x         KPESTR,KPEEND,AMPEB2C,AGEBFCC,
-     x         ELCEX,ELCAM,ELCBFC)
+     x         ELCEX,ELCAM,ELCBFC,GAM_ee)
 
          wtime2 = omp_get_wtime() - wtime
 
          write(*,3000) wtime1,wtime2
+
+      if(allocated(GAM_ee)) deallocate(GAM_ee)
 
  3000 FORMAT(/8X,'  +--------------------------------------+',/,
      X        8X,'  |    TIMING SUMMARY FOR CALCULATION    |',/,
