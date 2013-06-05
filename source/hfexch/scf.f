@@ -545,9 +545,6 @@ C Call interaction Fock build for all particles
           EIGAVL = ITER.GT.1
          end if
          IF(LSOSCF .AND.  EIGAVL) THEN
-          write(*,*) "nae:",nae
-          write(*,*) "na:",na
-          write(*,*) "npra:",npra
 !!!!!!      --> SETUP LOWER TRIANGLE FOCKE FOR SOSCF
            call pack_LT(nebf,nebfLT,FAE,FLT)
           call SOGRAD(GRADA,FLT,vecAE,WRK,NPRA,NA,L0,L1,NEBFLT,ORBGRDA)
