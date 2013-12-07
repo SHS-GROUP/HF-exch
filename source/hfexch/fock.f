@@ -294,8 +294,8 @@ C Two-electron energy
       double precision val
       double precision xFAEint(nebf,nebf)
       double precision xFBEint(nebf,nebf)
-      double precision zero
-      parameter(zero=0.0d+00)
+      double precision zero,half
+      parameter(zero=0.0d+00,half=0.50d+00)
 
       E_AB=zero
 
@@ -314,7 +314,7 @@ C Two-electron energy
                   val=GAM_ee(ia1)
                   xFAEint(ie1,je1)=xFAEint(ie1,je1)+DBE(ie2,je2)*val
                   xFBEint(ie1,je1)=xFBEint(ie1,je1)+DAE(ie2,je2)*val
-                  E_AB=E_AB+DAE(ie1,je1)*DBE(ie2,je2)*val
+                  E_AB=E_AB+DAE(ie1,je1)*DBE(ie2,je2)*val*half
 
                end do
             end do
