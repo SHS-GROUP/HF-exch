@@ -41,11 +41,13 @@
       integer NAE               ! Number of regular electrons
       integer NBE               ! Number of special electrons
       integer NAalpE,NAbetE
+      integer NBalpE,NBbetE
 !-------Basis Set Info-------)
       integer i,j,idum,istat
       integer NUCST
       logical read_CE
       logical LHF
+      logical LUHF
       logical LDBG
       logical LSOSCF
       logical LOCBSE
@@ -57,6 +59,8 @@
       integer npebf,nebf,npbf
       integer nebf2,npbf2,NPR,NEBFLT
       integer NPRA,NPRB
+      integer NPRAalp,NPRAbet
+      integer NPRBalp,NPRBbet
 
       integer ngee
 
@@ -104,14 +108,21 @@
          end do
       end do
 
-      read(9,*)nelec
-      read(9,*)NAE
-      read(9,*)NBE
+      read(9,*) nelec
+      read(9,*) NAE
+      read(9,*) NBE
       read(9,*) read_CE
       read(9,*) LHF
+      read(9,*) LUHF
       read(9,*) LDBG
       read(9,*) LSOSCF
       read(9,*) LOCBSE
+      if (LUHF) then
+       read(9,*) NAalpE
+       read(9,*) NAbetE
+       read(9,*) NBalpE
+       read(9,*) NBbetE
+      end if
 
       close(9)
 
@@ -132,10 +143,22 @@
       write(*,*)'NAE     =',NAE
       write(*,*)'NBE     =',NBE
       write(*,*)'LHF     =',LHF
+      write(*,*)'LUHF    =',LUHF
       write(*,*)'read_CE =',read_CE
       write(*,*)'LDBG    =',LDBG
       write(*,*)'LSOSCF  =',LSOSCF
       write(*,*)'LOCBSE  =',LOCBSE
+      if (LUHF) then
+       write(*,*) 'NAalpE =',NAalpE
+       write(*,*) 'NAbetE =',NAbetE
+       write(*,*) 'NBalpE =',NBalpE
+       write(*,*) 'NBbetE =',NBbetE
+      end if
+
+      if ((LHF).and.(LUHF)) then
+       write(*,*) "Open-shell HF with exchange not currently supported"
+       return
+      end if
 
       write(*,*)
       write(*,*)' CHECK CONTRACTED ELECTRONIC BASIS FUNCTIONS '
@@ -204,16 +227,32 @@
       NEBFLT=nebf*(nebf+1)/2
       if(LHF) NPRA=NPR
 
+      if (LUHF) then
+       NPRA=NAalpE*(nebf-NAalpE)
+       NPRB=NAbetE*(nebf-NAbetE)
+      end if
+
       wtime1 = omp_get_wtime() - wtime
       wtime  = omp_get_wtime()
 
-      call scf(nelec,nae,nbe,npra,nprb,nebflt,
-     x         npebf,nebf,nebf2,ngee,
-     x         read_CE,
-     x         LHF,LSOSCF,LOCBSE,LDBG,
-     x         nat,cat,zan,
-     x         KPESTR,KPEEND,AMPEB2C,AGEBFCC,
-     x         ELCEX,ELCAM,ELCBFC,GAM_ee)
+      if (LUHF) then
+       call uscf(nelec,NAE,NBE,NAalpE,NAbetE,NBalpE,NBbetE,
+     x           NPRA,NPRB,
+     x           npebf,nebf,nebf2,nebflt,ngee,
+     x           read_CE,
+     x           LHF,LSOSCF,LOCBSE,LDBG,
+     x           nat,cat,zan,
+     x           KPESTR,KPEEND,AMPEB2C,AGEBFCC,
+     x           ELCEX,ELCAM,ELCBFC,GAM_ee)
+      else
+       call scf(nelec,nae,nbe,npra,nprb,nebflt,
+     x          npebf,nebf,nebf2,ngee,
+     x          read_CE,
+     x          LHF,LSOSCF,LOCBSE,LDBG,
+     x          nat,cat,zan,
+     x          KPESTR,KPEEND,AMPEB2C,AGEBFCC,
+     x          ELCEX,ELCAM,ELCBFC,GAM_ee)
+      end if
 
          wtime2 = omp_get_wtime() - wtime
 

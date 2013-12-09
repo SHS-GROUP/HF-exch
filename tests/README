@@ -37,3 +37,14 @@ Results:
  - interaction energy is exactly Enuc
  - total energy is thus two times the isolated energy
 
+
+======
+TEST02
+======
+
+Same as TEST01 but with open-shell calculation (one alpha / one beta electron for each subsystem)
+
+Results:
+ - gives same energy as closed-shell case
+ - alpha and beta orbitals are exactly the same for each subsystem
+

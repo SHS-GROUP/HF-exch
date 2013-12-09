@@ -18,8 +18,12 @@
 2       = NBE           number of electrons in B subsystem
 .false. = read_CE       read in electronic vectors from guessC[A,B]E.inp
 .false. = LHF           force regular Hartree-Fock calculation
-.false. = LUHF          open-shell (must specify alpha/beta electrons below)
+.true.  = LUHF          open-shell (must specify alpha/beta electrons below)
 .true.  = LDBG          debugging flag
 .true.  = LSOSCF        second-order SCF converger
 .true.  = LOCBSE        orthogonality-constrained basis set expansion method
+1       = NAalpE
+1       = NAbetE
+1       = NBalpE
+1       = NBbetE
 
