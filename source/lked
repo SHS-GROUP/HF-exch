@@ -16,7 +16,7 @@ fi
 
 F77=ifort
 #OPT='-O2 -openmp -integer-size 64 -fp-model strict -no-ftz -traceback -check all -ipo'  # Debug
-OPT='-O2 -openmp -integer-size 64 -fp-model strict -no-ftz all -ipo'  # UIUC
+OPT='-O2 -openmp -integer-size 64 -fp-model strict -no-ftz -ipo'  # UIUC
 #OPT='-O2 -openmp -integer-size 64 -fp-model strict -no-ftz -xHOST -ipo'  # LionXF
 
 FILS='../object/*.o'
