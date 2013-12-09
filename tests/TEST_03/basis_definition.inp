@@ -1,0 +1,29 @@
+2 =NAT
+1.0   0.00   0.00   0.00       H
+1.0   0.00   0.00 500.00       H
+6    =NEBF
+10   =NPEBF
+1   1   0   0   0      33.8650000000000000   0.0254938  0.00  0.00   0.00
+2   1   0   0   0       5.0947900000000000   0.1903730  0.00  0.00   0.00
+3   1   0   0   0       1.1587900000000000   0.8521610  0.00  0.00   0.00
+4   2   0   0   0       0.3258400000000000   1.0000000  0.00  0.00   0.00
+5   3   0   0   0       0.1027410000000000   1.0000000  0.00  0.00   0.00
+6   4   0   0   0      33.8650000000000000   0.0254938  0.00  0.00 500.00
+7   4   0   0   0       5.0947900000000000   0.1903730  0.00  0.00 500.00
+8   4   0   0   0       1.1587900000000000   0.8521610  0.00  0.00 500.00
+9   5   0   0   0       0.3258400000000000   1.0000000  0.00  0.00 500.00
+10  6   0   0   0       0.1027410000000000   1.0000000  0.00  0.00 500.00
+2       = nelec         total number of electrons
+1       = NAE           number of electrons in A subsystem
+1       = NBE           number of electrons in B subsystem
+.false. = read_CE       read in electronic vectors from guessC[A,B]E.inp
+.false. = LHF           force regular Hartree-Fock calculation
+.true.  = LUHF          open-shell (must specify alpha/beta electrons below)
+.true.  = LDBG          debugging flag
+.true.  = LSOSCF        second-order SCF converger
+.true.  = LOCBSE        orthogonality-constrained basis set expansion method
+1       = NAalpE
+0       = NAbetE
+1       = NBalpE
+0       = NBbetE
+

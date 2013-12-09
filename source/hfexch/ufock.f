@@ -160,15 +160,15 @@ C Two-electron energy
      x                           FAalpEint,FBalpEint,E_AB_alp)
          if(NAalpE.eq.0) FAalpEint=zero
          if(NBalpE.eq.0) FBalpEint=zero
+         E_AB=E_AB_alp ! same as calculated below
       end if
       if((NAbetE.gt.0).or.(NBbetE.gt.0)) then
          call E_from_interaction(nebf,ngee,GAM_ee,DAEtot,DBEtot,
      x                           FAbetEint,FBbetEint,E_AB_bet)
          if(NAbetE.eq.0) FAbetEint=zero
          if(NBbetE.eq.0) FBbetEint=zero
+         E_AB=E_AB_bet ! same as calculated above
       end if
-
-      E_AB=E_AB_alp
 
       if(LDBG) then
 

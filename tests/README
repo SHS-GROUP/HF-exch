@@ -32,7 +32,7 @@ HF-exch:
       -----------------------------------------------
 
 Results:
- - one-electron energy of each subsystem is the same as GAMESS with additional E(e-,He)=-Enuc
+ - one-electron energy of each subsystem is the same as GAMESS with additional 2*E(e-,He)=-Enuc
  - two-electron energy of each subsystem is the same as GAMESS
  - interaction energy is exactly Enuc
  - total energy is thus two times the isolated energy
@@ -47,4 +47,91 @@ Same as TEST01 but with open-shell calculation (one alpha / one beta electron fo
 Results:
  - gives same energy as closed-shell case
  - alpha and beta orbitals are exactly the same for each subsystem
+
+
+======
+TEST03
+======
+
+System:      H (1 electrons) separated by 500 Ang from H (1 electrons)
+Level:       HF-exch with 6-311G for hydrogen
+Compare to:  Corresponding UHF calculation for isolated H
+
+GAMESS:
+            ONE ELECTRON ENERGY =      -0.4998098153
+            TWO ELECTRON ENERGY =       0.0000000000
+                   TOTAL ENERGY =      -0.4998098153
+
+HF-exch:
+      -----------------------------------------------
+               HF(exch) ENERGETIC COMPONENTS         
+      -----------------------------------------------
+                E_NUC=         0.0010583545
+            ---------------------------------
+             E_A_CORE=        -0.5008681698
+               E_A_EE=         0.0000000000
+                  E_A=        -0.5008681698
+            ---------------------------------
+             E_B_CORE=        -0.5008681698
+               E_B_EE=         0.0000000000
+                  E_B=        -0.5008681698
+            ---------------------------------
+                 E_AB=         0.0010583545
+            ---------------------------------
+              E_TOTAL=        -0.9996196305
+      -----------------------------------------------
+
+Results:
+ - one-electron energy of each subsystem is the same as GAMESS with additional E(e-,H)=-Enuc
+ - interaction energy is exactly Enuc
+ - total energy is thus two times the isolated energy
+ - correct answer for A and B electron being of same spin
+ - no convergence for A and B electron being of opposite spin
+
+
+======
+TEST04
+======
+
+System:      He (2 electrons) separated by 500 Ang from H (1 electrons)
+Level:       HF-exch with 6-311G for helium and hydrogen
+Compare to:  Corresponding RHF (UHF) calculation for isolated He (H)
+
+GAMESS:
+ He:
+            ONE ELECTRON ENERGY =      -3.8860484102
+            TWO ELECTRON ENERGY =       1.0261529856
+                   TOTAL ENERGY =      -2.8598954246
+  H:
+            ONE ELECTRON ENERGY =      -0.4998098153
+            TWO ELECTRON ENERGY =       0.0000000000
+                   TOTAL ENERGY =      -0.4998098153
+
+HF-exch:
+      -----------------------------------------------
+               HF(exch) ENERGETIC COMPONENTS         
+      -----------------------------------------------
+                E_NUC=         0.0021167090
+            ---------------------------------
+             E_A_CORE=        -3.8881651210
+               E_A_EE=         1.0261529874
+                  E_A=        -2.8620121336
+            ---------------------------------
+             E_B_CORE=        -0.5019265243
+               E_B_EE=         0.0000000000
+                  E_B=        -0.5019265243
+            ---------------------------------
+                 E_AB=         0.0021167090
+            ---------------------------------
+              E_TOTAL=        -3.3597052398
+      -----------------------------------------------
+
+Results:
+ - one-electron energy of A subsystem is the same as GAMESS with additional 2*E(e-,H)=-Enuc
+ - one-electron energy of B subsystem is the same as GAMESS with additional E(e-,He)=-Enuc (!!!!)
+ - two-electron energy of each subsystem is the same as GAMESS
+ - interaction energy is exactly Enuc
+ - total energy is thus sum of isolated energies
+ - depending on initial guess of spins, one is always not guaranteed a closed shell within a particular
+   subsystem since splitting alpha/beta electrons amongst subsystems incurs no energy penalty
 

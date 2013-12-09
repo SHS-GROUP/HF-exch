@@ -1,0 +1,22 @@
+
+ $CONTRL SCFTYP=UHF COORD=unique units=angstrom
+         MULT=2 RUNTYP=energy exetyp=debug icharg=0
+         mplevl=0 ispher=1 maxit=200 $end
+ $scf    conv=1.0d-05 soscf=.t. $end
+ $SYSTEM TIMLIM=50000 mwords=30 $END
+ $GUESS  GUESS=HUCKEL $END
+ $DATA
+
+ C1
+ H    1.0     0.000000     0.000000     0.000000
+ S   3
+  1     33.8650000              0.0254938        
+  2      5.0947900              0.1903730        
+  3      1.1587900              0.8521610        
+ S   1
+  1      0.3258400              1.0000000        
+ S   1
+  1      0.1027410              1.0000000        
+
+ $END
+
